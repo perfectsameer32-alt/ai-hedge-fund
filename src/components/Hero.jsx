@@ -2,6 +2,8 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Environment, ContactShadows } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { ArrowRight, BrainCircuit } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function AbstractShapes() {
   return (
@@ -64,6 +66,21 @@ function MouseParallax() {
 }
 
 export default function Hero() {
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+
+  const handleEarlyAccess = () => {
+    navigate('/signup');
+  };
+
+  const handleLivePerformance = () => {
+    if (currentUser) {
+      navigate('/dashboard');
+    } else {
+      navigate('/access');
+    }
+  };
+
   return (
     <section id="home" className="relative min-h-screen pt-20 flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -116,12 +133,18 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col sm:flex-row items-center gap-5"
         >
-          <button className="px-8 py-4 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple text-dark-bg font-bold text-lg hover:shadow-[0_0_30px_rgba(0,240,255,0.5)] transition-all duration-300 flex items-center gap-2 group">
+          <button 
+            onClick={handleEarlyAccess}
+            className="px-8 py-4 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple text-dark-bg font-bold text-lg hover:shadow-[0_0_30px_rgba(0,240,255,0.5)] transition-all duration-300 flex items-center gap-2 group"
+          >
             Get Early Access
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
           
-          <button className="px-8 py-4 rounded-full border border-dark-border glass text-white font-semibold text-lg hover:bg-white/5 transition-all duration-300">
+          <button 
+            onClick={handleLivePerformance}
+            className="px-8 py-4 rounded-full border border-dark-border glass text-white font-semibold text-lg hover:bg-white/5 transition-all duration-300"
+          >
             View Live Performance
           </button>
         </motion.div>
