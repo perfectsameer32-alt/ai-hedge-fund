@@ -1,4 +1,5 @@
 import { Hexagon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
@@ -20,20 +21,20 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Technology</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-neon-cyan transition-colors">Neural Networks</a></li>
-              <li><a href="#" className="hover:text-neon-cyan transition-colors">High-Frequency Execution</a></li>
-              <li><a href="#" className="hover:text-neon-cyan transition-colors">Risk Modeling</a></li>
-              <li><a href="#" className="hover:text-neon-cyan transition-colors">Data Ingestion</a></li>
+              <li><Link to="/features" className="hover:text-neon-cyan transition-colors">Neural Networks</Link></li>
+              <li><Link to="/features" className="hover:text-neon-cyan transition-colors">High-Frequency Execution</Link></li>
+              <li><Link to="/features" className="hover:text-neon-cyan transition-colors">Risk Modeling</Link></li>
+              <li><Link to="/features" className="hover:text-neon-cyan transition-colors">Data Ingestion</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#about-ai" className="hover:text-neon-purple transition-colors">About Us</a></li>
-              <li><a href="#features" className="hover:text-neon-purple transition-colors">Platform</a></li>
-              <li><a href="#founder" className="hover:text-neon-purple transition-colors">Founder</a></li>
-              <li><a href="#" className="hover:text-neon-purple transition-colors">Careers</a></li>
+              <li><Link to="/about" className="hover:text-neon-purple transition-colors">About Us</Link></li>
+              <li><Link to="/platform" className="hover:text-neon-purple transition-colors">Platform</Link></li>
+              <li><Link to="/founder" className="hover:text-neon-purple transition-colors">Founder</Link></li>
+              <li><Link to="/features" className="hover:text-neon-purple transition-colors">Features</Link></li>
             </ul>
           </div>
 

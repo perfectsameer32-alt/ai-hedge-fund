@@ -4,7 +4,6 @@ import { Toaster } from 'react-hot-toast';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import CustomCursor from './components/CustomCursor';
 import BackgroundEffects from './components/BackgroundEffects';
 
 import Home from './pages/Home';
@@ -18,8 +17,10 @@ import ClientDashboard from './pages/ClientDashboard';
 
 import Overview from './pages/dashboard/Overview';
 import LiveExecution from './pages/dashboard/LiveExecution';
+import PaperTrading from './pages/dashboard/PaperTrading';
 import Profile from './pages/dashboard/Profile';
 import Settings from './pages/dashboard/Settings';
+import NewsPanel from './pages/dashboard/NewsPanel';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -32,11 +33,10 @@ const ProtectedRoute = ({ children }) => {
 
 function AppContent() {
   const location = useLocation();
-  const isPortal = location.pathname === '/access' || location.pathname === '/signup' || location.pathname.startsWith('/dashboard');
+  const isPortal = location.pathname === '/access' || location.pathname === '/login' || location.pathname === '/signup' || location.pathname.startsWith('/dashboard');
 
   return (
     <div className="relative min-h-screen bg-dark-bg text-white selection:bg-neon-cyan/30 selection:text-white flex flex-col font-sans">
-      <CustomCursor />
       <BackgroundEffects />
       
       {/* Global Toaster for notifications */}
@@ -53,6 +53,7 @@ function AppContent() {
             <Route path="/platform" element={<PlatformPage />} />
             <Route path="/founder" element={<FounderPage />} />
             <Route path="/access" element={<AccessPortal />} />
+            <Route path="/login" element={<AccessPortal />} />
             <Route path="/signup" element={<Signup />} />
             
             <Route path="/dashboard" element={
@@ -63,6 +64,8 @@ function AppContent() {
                {/* Nested Routes rendered inside ClientDashboard Outlet */}
                <Route index element={<Overview />} />
                <Route path="execution" element={<LiveExecution />} />
+               <Route path="trade" element={<PaperTrading />} />
+               <Route path="news" element={<NewsPanel />} />
                <Route path="profile" element={<Profile />} />
                <Route path="settings" element={<Settings />} />
             </Route>

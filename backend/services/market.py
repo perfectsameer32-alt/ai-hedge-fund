@@ -10,7 +10,7 @@ import requests
 
 # ── Config ──────────────────────────────────────────────────────
 STOCK_SYMBOLS = ["AAPL", "TSLA", "GOOGL", "MSFT", "NVDA"]
-CRYPTO_SYMBOLS = ["BTC", "ETH", "SOL"]
+CRYPTO_SYMBOLS = ["BTC", "ETH", "SOL", "XRP"]
 BINANCE_TICKER_URL = "https://api.binance.com/api/v3/ticker/24hr"
 CACHE_TTL_SECONDS = 30
 

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Activity, LayoutDashboard, Settings, User, LogOut, ShieldCheck } from 'lucide-react';
+import { Activity, LayoutDashboard, Settings, User, LogOut, ShieldCheck, Home, Newspaper, Briefcase } from 'lucide-react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import PageTransition from '../components/PageTransition';
 import { useAuth } from '../context/AuthContext';
@@ -33,8 +33,11 @@ export default function ClientDashboard() {
   const navItems = [
     { icon: <LayoutDashboard size={18} />, label: "Overview", path: "/dashboard" },
     { icon: <Activity size={18} />, label: "Live Execution", path: "/dashboard/execution" },
+    { icon: <Briefcase size={18} />, label: "Paper Trading", path: "/dashboard/trade" },
+    { icon: <Newspaper size={18} />, label: "Live News", path: "/dashboard/news" },
     { icon: <User size={18} />, label: "Profile", path: "/dashboard/profile" },
     { icon: <Settings size={18} />, label: "Settings", path: "/dashboard/settings" },
+    { icon: <Home size={18} />, label: "Back to Home", path: "/" },
   ];
 
   // Helper to generate initials from email or name

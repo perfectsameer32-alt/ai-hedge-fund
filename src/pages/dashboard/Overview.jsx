@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight, ArrowDownRight, Activity, Brain, WifiOff, RefreshCw, Newspaper, ExternalLink } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { useAuth } from '../../context/AuthContext';
-import { fetchPortfolio, fetchAllSignals, fetchAssetDetail, fetchNews } from '../../api/client';
+import { fetchPortfolio, fetchAllSignals, fetchAssetDetail } from '../../api/client';
 
 export default function Overview() {
   const { userProfile } = useAuth();
@@ -12,7 +12,6 @@ export default function Overview() {
   const [portfolio, setPortfolio] = useState(null);
   const [topSignal, setTopSignal] = useState(null);
   const [chartData, setChartData] = useState([]);
-  const [news, setNews] = useState([]);
   const [isOffline, setIsOffline] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [chartSymbol, setChartSymbol] = useState("AAPL");
@@ -47,11 +46,6 @@ export default function Overview() {
         }))
       );
     }
-
-    const newsRes = await fetchNews(chartSymbol);
-    if (newsRes.data?.news) {
-      setNews(newsRes.data.news);
-    }
   }, [chartSymbol]);
 
   // ── Initial load + auto-refresh every 5 seconds ─────────────
@@ -85,6 +79,12 @@ export default function Overview() {
     BUY: "bg-emerald-400/10 border-emerald-400/20 text-emerald-400",
     SELL: "bg-rose-400/10 border-rose-400/20 text-rose-400",
     HOLD: "bg-amber-400/10 border-amber-400/20 text-amber-400",
+  };
+
+  const riskColor = {
+    Low: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+    Medium: "text-amber-400 bg-amber-400/10 border-amber-400/20",
+    High: "text-rose-400 bg-rose-400/10 border-rose-400/20",
   };
 
   // ── Skeleton loader ─────────────────────────────────────────
@@ -198,10 +198,10 @@ export default function Overview() {
       </div>
 
       {/* ── Main Dashboard Details Grid ────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div className="flex flex-col gap-6 mb-8">
         
-        {/* Left Column: Chart & AI Explanation */}
-        <div className="lg:col-span-2 flex flex-col gap-6">
+        {/* Chart & AI Explanation */}
+        <div className="flex flex-col gap-6">
           
           {/* Price History Chart */}
           <motion.div
@@ -216,7 +216,7 @@ export default function Overview() {
                 Price History — {chartSymbol}
               </h3>
               <div className="flex gap-2">
-                {["AAPL", "TSLA", "BTC", "ETH", "NVDA"].map((sym) => (
+                {["BTC", "ETH", "SOL", "XRP", "AAPL", "TSLA"].map((sym) => (
                   <button
                     key={sym}
                     onClick={() => setChartSymbol(sym)}
@@ -292,68 +292,79 @@ export default function Overview() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className={`p-6 rounded-2xl border flex gap-4 ${signalBg[topSignal.signal] || 'bg-white/5 border-white/10'}`}
+              className={`p-6 rounded-2xl border flex flex-col gap-4 ${signalBg[topSignal.signal] || 'bg-white/5 border-white/10'}`}
             >
-              <div className="mt-1">
-                <Brain size={24} />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
-                  AI Intelligence Report
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white font-mono">
-                    {topSignal.symbol}
-                  </span>
-                </h3>
-                <p className="text-sm opacity-90 leading-relaxed font-light">
-                  {topSignal.explanation || "No explanation available from the intelligence engine."}
-                </p>
+              <div className="flex items-start gap-4">
+                  <div className="mt-1">
+                    <Brain size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-lg font-bold flex items-center gap-2">
+                          Explainable AI Insight
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white font-mono">
+                            {topSignal.symbol}
+                          </span>
+                        </h3>
+                        <div className="text-right">
+                            <div className="text-2xl font-bold">{topSignal.confidence}%</div>
+                            <div className="text-xs opacity-70">Confidence</div>
+                        </div>
+                    </div>
+                    
+                    <div className="space-y-4 mt-4 text-sm opacity-90 leading-relaxed font-light relative">
+                      
+                      {/* Technical Reasons */}
+                      <div className="space-y-2">
+                          <p className="font-semibold text-white/80">Key Catalysts:</p>
+                          <ul className="list-disc pl-5 space-y-1">
+                              {topSignal.reasons?.map((r, i) => (
+                                  <li key={i}>{r}</li>
+                              ))}
+                          </ul>
+                      </div>
+
+                      <div className="h-px w-full bg-white/10 my-3" />
+
+                      {/* Risk Level */}
+                      <div className="flex items-center gap-3">
+                          <p className="font-semibold text-white/80">Risk Level:</p>
+                          <span className={`text-xs font-bold px-3 py-1 rounded-full border ${riskColor[topSignal.risk] || riskColor.Medium}`}>
+                            {topSignal.risk || "Medium"}
+                          </span>
+                      </div>
+
+                      <div className="h-px w-full bg-white/10 my-3" />
+
+                      {/* Explain Like I'm 5 */}
+                      <div>
+                          <p className="font-semibold text-white/80 mb-1 flex items-center gap-2">
+                             👶 Explain Like I&apos;m 5
+                          </p>
+                          <p className="text-white/70 italic">
+                             &quot;{topSignal.simpleExplanation || "No simple explanation available."}&quot;
+                          </p>
+                      </div>
+
+                      <div className="h-px w-full bg-white/10 my-3" />
+
+                      {/* Suggested Action */}
+                      <div>
+                          <p className="font-semibold text-white/80 mb-1 flex items-center gap-2">
+                             💡 Suggested Action
+                          </p>
+                          <p className="text-white/70">
+                             {topSignal.suggestedAction || "Monitor position and wait for clearer signals."}
+                          </p>
+                      </div>
+
+                    </div>
+                  </div>
               </div>
             </motion.div>
           )}
 
         </div>
-
-        {/* Right Column: News Panel */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="glass-panel p-6 rounded-2xl flex flex-col h-[525px]"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Newspaper className="text-neon-purple" size={20} />
-              News Feed — {chartSymbol}
-            </h3>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
-            {news.length > 0 ? (
-              news.map((item, idx) => (
-                <a 
-                  key={idx} 
-                  href={item.link} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="block p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all group"
-                >
-                  <h4 className="text-sm font-medium text-gray-200 mb-2 group-hover:text-neon-cyan transition-colors line-clamp-2">
-                    {item.title}
-                  </h4>
-                  <div className="flex justify-between items-center text-xs text-gray-500">
-                    <span>{new Date(item.date).toLocaleDateString()}</span>
-                    <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </a>
-              ))
-            ) : (
-              <div className="h-full flex items-center justify-center flex-col gap-3 text-center">
-                <Newspaper className="text-gray-600 w-10 h-10 mb-2" />
-                <p className="text-sm text-gray-500">No recent news found for {chartSymbol}.</p>
-              </div>
-            )}
-          </div>
-        </motion.div>
 
       </div>
     </>
